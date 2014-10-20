@@ -1,0 +1,30 @@
+{
+    "name": "kolyunya/yii2-partial-content",
+    "description": "Yii2 partial content filter.",
+    "keywords":
+    [
+        "yii2",
+        "extension",
+        "filter",
+        "HTTP",
+        "partial-content"
+    ],
+    "homepage": "https://github.com/Kolyunya/yii2-partial-content",
+    "type": "yii2-extension",
+    "license": "GNU GPL v3.0",
+    "authors":
+    [
+        {
+            "name": "Oleynikov Nikolay",
+            "email": "OleynikovNY@mail.ru",
+            "homepage": "http://github.com/Kolyunya/"
+        }
+    ],
+    "autoload":
+    {
+        "psr-4":
+        {
+            "kolyunya\\yii2\\": "sources"
+        }
+    }
+}

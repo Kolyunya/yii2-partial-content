@@ -23,7 +23,8 @@ class PartialContent extends ActionFilter
 
     public function afterAction ( $action , $result )
     {
-        $this->initializeContentProperties();
+        $this->initializeContentType();
+        $this->initializeContentSize();
         $this->initializeDefaultRange();
         $this->parseRequestedRange();
         $this->clearHeaders();
@@ -32,7 +33,7 @@ class PartialContent extends ActionFilter
         $this->sendResponseData();
     }
 
-    private function initializeContentProperties()
+    private function initializeContentType()
     {
 
         // If the controller set "contentType" then use it
@@ -46,6 +47,11 @@ class PartialContent extends ActionFilter
         {
             $this->contentType = 'application/octet-stream';
         }
+
+    }
+
+    private function initializeContentSize()
+    {
 
         // Calculate the content size
         $this->contentSize = strlen($this->owner->content);

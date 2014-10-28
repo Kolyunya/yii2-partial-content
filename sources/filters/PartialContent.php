@@ -9,17 +9,17 @@ use yii\base\ActionFilter;
 class PartialContent extends ActionFilter
 {
 
-    private $contentType = null;
+    private $contentType;
 
-    private $contentSize = null;
+    private $contentSize;
 
-    private $rangeFrom = null;
+    private $rangeFrom;
 
-    private $rangeTo = null;
+    private $rangeTo;
 
-    private $rangeSize = null;
+    private $rangeSize;
 
-    private $rangeWasRequested = false;
+    private $rangeWasRequested;
 
     public function afterAction ( $action , $result )
     {

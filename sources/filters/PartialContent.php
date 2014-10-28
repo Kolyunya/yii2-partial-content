@@ -134,7 +134,7 @@ class PartialContent extends ActionFilter
         }
 
         // Set status code #206
-        Yii::$app->response->setStatusCode('206','Partial content');
+        Yii::$app->response->setStatusCode('206');
 
         // Set "Content-Range" content header
         $contentRangeHeader = "bytes {$this->rangeFrom}-{$this->rangeTo}/{$this->contentSize}";

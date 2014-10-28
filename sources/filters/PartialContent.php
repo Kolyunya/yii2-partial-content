@@ -53,8 +53,24 @@ class PartialContent extends ActionFilter
     private function initializeContentSize()
     {
 
-        // Calculate the content size
-        $this->contentSize = strlen($this->owner->content);
+        // If a controller specified a "content"
+        if ( isset($this->owner->content) )
+        {
+
+            // Calculate the content size directly
+            $this->contentSize = strlen($this->owner->content);
+
+        }
+
+        // If a controller specified a "resource"
+        else
+        {
+
+            // Then use "fstat" to calculate it's size
+            $contentStatistics = fstat($this->owner->resource);
+            $this->contentSize = $contentStatistics['size'];
+
+        }
 
     }
 
@@ -151,7 +167,38 @@ class PartialContent extends ActionFilter
     private function sendResponseData()
     {
 
-        $responseData = substr($this->owner->content,$this->rangeFrom,$this->rangeSize);
+        // Data to be sent to the client
+        $responseData;
+
+        // If a controller specified a "content"
+        if ( isset($this->owner->content) )
+        {
+
+            $responseData = substr($this->owner->content,$this->rangeFrom,$this->rangeSize);
+
+        }
+
+        // If a controller specified a "resource"
+        else
+        {
+
+            // Set the file cursor
+            $seek = fseek($this->owner->resource,$this->rangeFrom);
+            if ( $seek !== 0 )
+            {
+                throw new \yii\base\Exception();
+            }
+
+            // Read the file contents
+            $responseData = fread($this->owner->resource,$this->rangeSize);
+            if ( $responseData === false )
+            {
+                throw new \yii\base\Exception();
+            }
+
+        }
+
+        // Send the contents to the client
         Yii::$app->getResponse()->content = $responseData;
         Yii::$app->getResponse()->send();
 

@@ -9,7 +9,13 @@ use yii\base\ActionFilter;
 class PartialContent extends ActionFilter
 {
 
-    private $contentType;
+    public $contentData;
+
+    public $contentResource;
+
+    public $contentType;
+
+    public $contentName;
 
     private $contentSize;
 
@@ -36,14 +42,8 @@ class PartialContent extends ActionFilter
     private function initializeContentType()
     {
 
-        // If the controller set "contentType" then use it
-        if ( isset($this->owner->contentType) )
-        {
-            $this->contentType = $this->owner->contentType;
-        }
-
-        // Else use a default value of "application/octet-stream"
-        else
+        // Set a default value to the "contentType"
+        if ( ! isset($this->contentType) )
         {
             $this->contentType = 'application/octet-stream';
         }
@@ -53,23 +53,29 @@ class PartialContent extends ActionFilter
     private function initializeContentSize()
     {
 
-        // If a controller specified a "content"
-        if ( isset($this->owner->content) )
+        // If a controller specified a "contentData"
+        if ( isset($this->contentData) )
         {
 
             // Calculate the content size directly
-            $this->contentSize = strlen($this->owner->content);
+            $this->contentSize = strlen($this->contentData);
 
         }
 
-        // If a controller specified a "resource"
-        else
+        // If a controller specified a "contentResource"
+        else if ( isset($this->contentResource) )
         {
 
             // Then use "fstat" to calculate it's size
-            $contentStatistics = fstat($this->owner->resource);
+            $contentStatistics = fstat($this->contentResource);
             $this->contentSize = $contentStatistics['size'];
 
+        }
+
+        // If neither "" nor "" were specified then this is an unrecoverable error
+        else
+        {
+            throw new \yii\base\Exception();
         }
 
     }
@@ -138,9 +144,9 @@ class PartialContent extends ActionFilter
         Yii::$app->response->getHeaders()->set('Content-Length',$this->rangeSize);
 
         // Set "Content-Disposition" header if the controller set the "contentName" property
-        if ( isset($this->owner->contentName) )
+        if ( isset($this->contentName) )
         {
-            $contentDisposition = 'attachment; filename="' . $this->owner->contentName . '"';
+            $contentDisposition = 'attachment; filename="' . $this->contentName . '"';
             Yii::$app->response->getHeaders()->set('Content-Disposition',$contentDisposition);
         }
 
@@ -171,26 +177,26 @@ class PartialContent extends ActionFilter
         $responseData;
 
         // If a controller specified a "content"
-        if ( isset($this->owner->content) )
+        if ( isset($this->contentData) )
         {
 
-            $responseData = substr($this->owner->content,$this->rangeFrom,$this->rangeSize);
+            $responseData = substr($this->contentData,$this->rangeFrom,$this->rangeSize);
 
         }
 
         // If a controller specified a "resource"
-        else
+        else if ( isset($this->contentResource) )
         {
 
             // Set the file cursor
-            $seek = fseek($this->owner->resource,$this->rangeFrom);
+            $seek = fseek($this->contentResource,$this->rangeFrom);
             if ( $seek !== 0 )
             {
                 throw new \yii\base\Exception();
             }
 
             // Read the file contents
-            $responseData = fread($this->owner->resource,$this->rangeSize);
+            $responseData = fread($this->contentResource,$this->rangeSize);
             if ( $responseData === false )
             {
                 throw new \yii\base\Exception();

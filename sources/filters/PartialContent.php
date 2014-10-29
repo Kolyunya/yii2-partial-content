@@ -5,6 +5,9 @@ namespace kolyunya\yii2\filters;
 use Yii;
 use yii\web\Controller;
 use yii\base\ActionFilter;
+use kolyunya\yii2\filters\partial_content\Data;
+use kolyunya\yii2\filters\partial_content\Resource;
+use kolyunya\yii2\filters\partial_content\File;
 
 class PartialContent extends ActionFilter
 {
@@ -13,9 +16,13 @@ class PartialContent extends ActionFilter
 
     public $contentResource;
 
+    public $contentFile;
+
     public $contentType;
 
     public $contentName;
+
+    private $content;
 
     private $contentSize;
 
@@ -29,6 +36,7 @@ class PartialContent extends ActionFilter
 
     public function afterAction ( $action , $result )
     {
+        $this->initializeContent();
         $this->initializeContentType();
         $this->initializeContentSize();
         $this->initializeDefaultRange();
@@ -37,6 +45,39 @@ class PartialContent extends ActionFilter
         $this->setCommonHeaders();
         $this->setPartialHeaders();
         $this->sendResponseData();
+    }
+
+    private function initializeContent()
+    {
+
+        if ( isset($this->contentData) )
+        {
+
+            $this->content = new Data($this->contentData);
+
+        }
+
+        else if ( isset($this->contentResource) )
+        {
+
+            $this->content = new Resource($this->contentResource);
+
+        }
+
+        else if ( isset($this->contentFile) )
+        {
+
+            $this->content = new File($this->contentFile);
+
+        }
+
+        else
+        {
+
+            throw new \yii\base\Exception('Invalid filter configuration');
+
+        }
+
     }
 
     private function initializeContentType()
@@ -53,30 +94,7 @@ class PartialContent extends ActionFilter
     private function initializeContentSize()
     {
 
-        // If a controller specified a "contentData"
-        if ( isset($this->contentData) )
-        {
-
-            // Calculate the content size directly
-            $this->contentSize = strlen($this->contentData);
-
-        }
-
-        // If a controller specified a "contentResource"
-        else if ( isset($this->contentResource) )
-        {
-
-            // Then use "fstat" to calculate it's size
-            $contentStatistics = fstat($this->contentResource);
-            $this->contentSize = $contentStatistics['size'];
-
-        }
-
-        // If neither "" nor "" were specified then this is an unrecoverable error
-        else
-        {
-            throw new \yii\base\Exception();
-        }
+        $this->contentSize = $this->content->getSize();
 
     }
 
@@ -173,39 +191,9 @@ class PartialContent extends ActionFilter
     private function sendResponseData()
     {
 
-        // Data to be sent to the client
-        $responseData;
-
-        // If a controller specified a "content"
-        if ( isset($this->contentData) )
-        {
-
-            $responseData = substr($this->contentData,$this->rangeFrom,$this->rangeSize);
-
-        }
-
-        // If a controller specified a "resource"
-        else if ( isset($this->contentResource) )
-        {
-
-            // Set the file cursor
-            $seek = fseek($this->contentResource,$this->rangeFrom);
-            if ( $seek !== 0 )
-            {
-                throw new \yii\base\Exception();
-            }
-
-            // Read the file contents
-            $responseData = fread($this->contentResource,$this->rangeSize);
-            if ( $responseData === false )
-            {
-                throw new \yii\base\Exception();
-            }
-
-        }
-
         // Send the contents to the client
-        Yii::$app->getResponse()->content = $responseData;
+        $data = $this->content->getData($this->rangeFrom,$this->rangeSize);
+        Yii::$app->getResponse()->content = $data;
         Yii::$app->getResponse()->send();
 
     }

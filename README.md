@@ -8,7 +8,7 @@ The widget is [composer](https://getcomposer.org/)-enabled. You can aquire the l
 
 ##Usage example
 
-To use the filter your controller must set either `contentData` or `contentResource` property of the filter. Those properties then will be used by the filter to send data to the client completly or partially depending on it's request. The filter should be added to the controller just like any other Yii2 action filter. You may also specify actions which should be processed by the filter.
+The controller currently has four options to set the content to be sent to the client. Those options are `contentData`, `contentResource`, `contentStream` and the `contentFile`. The use of those properties is pretty straightforward. One of those properties will be used by the filter to send data to the client completly or partially depending on it's request. The filter should be added to the controller just like any other Yii2 action filter. You may also specify actions which should be processed by the filter.
 
 The controller may also set the `contentType` property of the filter which will be used by the filter as a value of the `Content-Type` header. The default value is `application/octet-stream`.
 
@@ -46,11 +46,19 @@ public function actionGet()
     // Get a reference to the filter
     $behavior = $this->getBehavior('partial-content');
 
-    // Either set the data itself
+    // Now you have four options to set the data
+
+    // [0] - Either set the data itself
     $behavior->contentData = $this->data;
 
-    // Or specify the data resource
+    // [1] - Or specify the data resource
     $behavior->contentResource = $this->resource;
+
+    // [2] - Or specify the data stream
+    $behavior->contentStream = $this->stream;
+
+    // [3] - Or specify the file name
+    $behavior->contentFile = $this->file;
 
     // Optionally set the content type
     $behavior->contentType = 'audio/mpeg';

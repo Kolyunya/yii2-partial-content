@@ -7,6 +7,6 @@ interface IContent
 
     public function getSize();
 
-    public function getData ( $from , $to );
+    public function getData ( $from , $length );
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace kolyunya\yii2\filters\partial_content;
+namespace kolyunya\yii2\filters\PartialContent;
 
 interface IContent
 {

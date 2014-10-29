@@ -5,9 +5,9 @@ namespace kolyunya\yii2\filters;
 use Yii;
 use yii\web\Controller;
 use yii\base\ActionFilter;
-use kolyunya\yii2\filters\partial_content\Data;
-use kolyunya\yii2\filters\partial_content\Resource;
-use kolyunya\yii2\filters\partial_content\File;
+use kolyunya\yii2\filters\PartialContent\Data;
+use kolyunya\yii2\filters\PartialContent\Resource;
+use kolyunya\yii2\filters\PartialContent\File;
 
 class PartialContent extends ActionFilter
 {

@@ -15,7 +15,6 @@ The controller may also set the `contentType` property of the filter which will 
 The controller may also set the `contentName` property of the filter which will be used as a filename value of the `Content-Disposition` header. If the controller does not set this property this header will not be sent.
 
 ~~~php
-
 public function behaviors()
 {
 
@@ -62,5 +61,4 @@ public function actionGet()
     // The filter will do the rest itself
 
 }
-
 ~~~

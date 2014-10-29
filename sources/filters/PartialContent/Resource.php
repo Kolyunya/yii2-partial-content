@@ -2,6 +2,8 @@
 
 namespace kolyunya\yii2\filters\PartialContent;
 
+use yii\base\Exception;
+
 class Resource implements IContent
 {
 
@@ -23,7 +25,7 @@ class Resource implements IContent
         // Check if resource size was retrieved successfully
         if ( ! isset($statistics['size']) )
         {
-            throw new \yii\base\Exception('Unable to retrieve the resource size');
+            throw new Exception('Unable to retrieve the resource size');
         }
 
         // Retrieve the resource size
@@ -40,14 +42,14 @@ class Resource implements IContent
         $seek = fseek($this->resource,$from);
         if ( $seek !== 0 )
         {
-            throw new \yii\base\Exception('Unable to set the resource offset');
+            throw new Exception('Unable to set the resource offset');
         }
 
         // Read the resource contents
         $data = fread($this->resource,$length);
         if ( $data === false )
         {
-            throw new \yii\base\Exception('Unable to read the resource');
+            throw new Exception('Unable to read the resource');
         }
 
         return $data;

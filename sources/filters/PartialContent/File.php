@@ -2,6 +2,8 @@
 
 namespace kolyunya\yii2\filters\PartialContent;
 
+use yii\base\Exception;
+
 class File extends Resource
 {
 
@@ -14,7 +16,7 @@ class File extends Resource
         // Check if the file was effectively opened
         if ( $resource === false )
         {
-            throw new \yii\base\Exception('Unable to open the file');
+            throw new Exception('Unable to open the file');
         }
 
         // Construct the Resource

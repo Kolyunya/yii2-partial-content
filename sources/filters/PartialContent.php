@@ -5,8 +5,10 @@ namespace kolyunya\yii2\filters;
 use Yii;
 use yii\web\Controller;
 use yii\base\ActionFilter;
+use yii\base\Exception;
 use kolyunya\yii2\filters\PartialContent\Data;
 use kolyunya\yii2\filters\PartialContent\Resource;
+use kolyunya\yii2\filters\PartialContent\Stream;
 use kolyunya\yii2\filters\PartialContent\File;
 
 class PartialContent extends ActionFilter
@@ -15,6 +17,8 @@ class PartialContent extends ActionFilter
     public $contentData;
 
     public $contentResource;
+
+    public $contentStream;
 
     public $contentFile;
 
@@ -64,6 +68,13 @@ class PartialContent extends ActionFilter
 
         }
 
+        else if ( isset($this->contentStream) )
+        {
+
+            $this->content = new Stream($this->contentStream);
+
+        }
+
         else if ( isset($this->contentFile) )
         {
 
@@ -74,7 +85,7 @@ class PartialContent extends ActionFilter
         else
         {
 
-            throw new \yii\base\Exception('Invalid filter configuration');
+            throw new Exception('Invalid filter configuration');
 
         }
 

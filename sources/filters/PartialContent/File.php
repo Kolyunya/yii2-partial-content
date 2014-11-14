@@ -7,15 +7,14 @@ use yii\base\Exception;
 class File extends Resource
 {
 
-    public function __construct ( $file )
+    public function __construct($file)
     {
 
         // Open the file for read
-        $resource = fopen($file,'r');
+        $resource = fopen($file, 'r');
 
         // Check if the file was effectively opened
-        if ( $resource === false )
-        {
+        if ($resource === false) {
             throw new Exception('Unable to open the file');
         }
 
@@ -23,5 +22,4 @@ class File extends Resource
         parent::__construct($resource);
 
     }
-
 }

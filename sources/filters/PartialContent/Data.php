@@ -7,7 +7,7 @@ class Data implements IContent
 
     private $data;
 
-    public function __construct ( $data )
+    public function __construct($data)
     {
 
         $this->data = $data;
@@ -22,12 +22,11 @@ class Data implements IContent
 
     }
 
-    public function getData ( $from , $length )
+    public function getData($from, $length)
     {
 
-        $data = substr($this->data,$from,$length);
+        $data = substr($this->data, $from, $length);
         return $data;
 
     }
-
 }
